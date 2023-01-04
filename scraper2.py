@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 import boto3
 
 
-
 def extract_snowpack_data(url='https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?report=Washington'):
     r = requests.get(url)
     html = r.content
@@ -29,7 +28,8 @@ def extract_snowpack_data(url='https://wcc.sc.egov.usda.gov/reports/UpdateReport
                 column_text = column.getText()
                 if j == 1:
                     try:
-                        pct_med = int(''.join(filter(str.isdigit, column_text)))
+                        pct_med = int(
+                            ''.join(filter(str.isdigit, column_text)))
                     except:
                         pct_med = 0
                     region_dictionary[current_region]['Basin Index'] = {}
@@ -58,13 +58,13 @@ def extract_snowpack_data(url='https://wcc.sc.egov.usda.gov/reports/UpdateReport
 
 
 def gen_url(month, day, year):
-    return  'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?textReport=Washington&textRptKey=12&textFormat=SNOTEL+Snow%2FPrecipitation+Update+Report&StateList=12&RegionList=Select+a+Region+or+Basin&SpecialList=Select+a+Special+Report&MonthList={}&DayList={}&YearList={}&FormatList=N3&OutputFormatList=HTML&textMonth={}&textDay={}&CompYearList=select+a+year'.format(month,day,year, month, day)
+    return 'https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?textReport=Washington&textRptKey=12&textFormat=SNOTEL+Snow%2FPrecipitation+Update+Report&StateList=12&RegionList=Select+a+Region+or+Basin&SpecialList=Select+a+Special+Report&MonthList={}&DayList={}&YearList={}&FormatList=N3&OutputFormatList=HTML&textMonth={}&textDay={}&CompYearList=select+a+year'.format(month, day, year, month, day)
 
 
 def write_snotel_measurement(location, date_, measurment_dict, dynamoDB):
 
     months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 'May': 5, 'June': 6,
-        'July': 7, 'August': 8, 'September': 9, 'October': 10, 'November': 11, 'December': 12}
+              'July': 7, 'August': 8, 'September': 9, 'October': 10, 'November': 11, 'December': 12}
     month = months[date_[0]]
     day = date_[1]
     year = date_[2]
@@ -72,14 +72,14 @@ def write_snotel_measurement(location, date_, measurment_dict, dynamoDB):
         day = '0'+str(day)
     if month < 10:
         month = '0'+str(month)
-    datestring = "{}{}{}".format(year,month,day)
+    datestring = "{}{}{}".format(year, month, day)
 
     dynamoDB.put_item(
         TableName="Snotel",
         Item={
-            "LocationID": {"S": location },
+            "LocationID": {"S": location},
             "SnotelDate": {"S": datestring},
-            "SnowCurrent":{"N": str(measurment_dict["snow_current"]) },
+            "SnowCurrent": {"N": str(measurment_dict["snow_current"])},
             "SnowMedian": {"N": str(measurment_dict["snow_median"])},
             "SnowPctMedian": {"N": str(measurment_dict["snow_pct_median"])},
             "WaterCurrent": {"N": str(measurment_dict["water_current"])},
@@ -88,6 +88,6 @@ def write_snotel_measurement(location, date_, measurment_dict, dynamoDB):
         }
     )
 
-dynamo = boto3.client('dynamodb',region_name='us-west-2', endpoint_url='http://localhost:8000')
 
-
+dynamo = boto3.client('dynamodb', region_name='us-west-2',
+                      endpoint_url='http://localhost:8000')
