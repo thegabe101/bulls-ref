@@ -33,7 +33,7 @@ for row in table_rows:
         f'This players name is {player.text} Jersey number: {player_number}')
 
     dynamoDB.put_item(
-        TableName="Snotel",
+        TableName="Player",
         Item={
             "PlayerName": {"S": player_name},
             "PlayerNumber": {"N": player_number},
