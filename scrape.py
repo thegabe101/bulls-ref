@@ -39,7 +39,7 @@ for row in table_rows:
             "PlayerNumber": {"N": player_number},
         }
     )
-#
+
 
 
 # print(html)

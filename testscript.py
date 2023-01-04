@@ -22,6 +22,18 @@ tbody = player_table.find('tbody')
 table_rows = tbody.find_all('tr')
 print(f"found {len(table_rows)} players ")
 
+
+
+from sqlalchemy import Table, Column, Integer, String, MetaData
+meta = MetaData()
+
+students = Table(
+   'students', meta, 
+   Column('id', Integer, primary_key = True), 
+   Column('name', String), 
+   Column('lastname', String), 
+)
+
 for row in table_rows:
     print(row)
 

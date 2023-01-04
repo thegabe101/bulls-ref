@@ -1,15 +1,29 @@
-
-version: '3.5'
+version: "3.5"
 services:
-  dynamodb:
-    container_name: dynamo-local
-    image: amazon/dynamodb-local:latest
-    ports:
-      - "8000:8000"
-    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
-    networks:
-      - local-api-network
+    dynamodb:
+        container_name: dynamo-local
+        image: amazon/dynamodb-local:latest
+        ports:
+            - "8000:8000"
+        command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+        networks:
+            - local-api-network
+
+    postgres:
+        image: postgres:10.0
+        hostname: postgres
+        ports:
+            - "127.0.0.1:15432:5432"
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: bard
+            POSTGRES_PASSWORD: bard
+            POSTGRES_DATABASE: bard
+
 networks:
-  local-api-network:
-    name: local-api-network
-    driver: bridge
+    local-api-network:
+        name: local-api-network
+        driver: bridge
+volumes:
+    postgres-data: {}
